@@ -12,6 +12,8 @@ FROM multiarch/qemu-user-static:x86_64-aarch64 AS multiarch-aarch64
 # centos/7 base image
 FROM centos:7 AS centos-7-base
 
+RUN scl enable devtoolset-7 bash
+
 ENV CMAKE_HOME="/opt/cmake"
 ARG CMAKE_VERSION="3.31.6"
 ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download"
@@ -264,6 +266,7 @@ RUN cmake -DCMAKE_INSTALL_PREFIX="$CMAKE_INSTALL_PREFIX" \
     -DFLB_CHUNK_TRACE="${FLB_CHUNK_TRACE}" \
     -DFLB_UNICODE_ENCODER="${FLB_UNICODE_ENCODER}" \
     ../
+
 
 VOLUME [ "/output" ]
 CMD [ "/bin/bash", "-c", "make -j 4 && cpack -G RPM && cp *.rpm /output/" ]
