@@ -12,6 +12,7 @@ FROM multiarch/qemu-user-static:x86_64-aarch64 AS multiarch-aarch64
 # centos/7 base image
 FROM centos:7 AS centos-7-base
 
+RUN yum install -y scl-utils
 RUN scl enable devtoolset-7 bash
 
 ENV CMAKE_HOME="/opt/cmake"
@@ -19,7 +20,7 @@ ARG CMAKE_VERSION="3.31.6"
 ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download"
 
 # hadolint ignore=DL3033
-RUN echo "hi" && sed -i -e "s/^mirrorlist=http:\/\/mirrorlist.centos.org/#mirrorlist=http:\/\/mirrorlist.centos.org/g" /etc/yum.repos.d/CentOS-Base.repo && \
+RUN sed -i -e "s/^mirrorlist=http:\/\/mirrorlist.centos.org/#mirrorlist=http:\/\/mirrorlist.centos.org/g" /etc/yum.repos.d/CentOS-Base.repo && \
     sed -i -e "s/^#baseurl=http:\/\/mirror.centos.org/baseurl=http:\/\/vault.centos.org/g" /etc/yum.repos.d/CentOS-Base.repo && \
     yum -y update && \
     yum install -y rpm-build curl ca-certificates gcc gcc-c++ make bash \
@@ -34,8 +35,6 @@ RUN echo "hi" && sed -i -e "s/^mirrorlist=http:\/\/mirrorlist.centos.org/#mirror
     cmake_download_url="${CMAKE_URL}/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-$(uname -m).tar.gz" && \
     echo "Downloading CMake ${CMAKE_VERSION}: ${cmake_download_url} -> ${CMAKE_HOME}" && \
     curl -jksSL "${cmake_download_url}" | tar -xzf - -C "${CMAKE_HOME}" --strip-components 1
-
-RUN scl enable devtoolset-7 bash
 
 ENV PATH="${CMAKE_HOME}/bin:${PATH}"
 
