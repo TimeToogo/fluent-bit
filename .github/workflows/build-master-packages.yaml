@@ -44,8 +44,8 @@ jobs:
     needs: master-build-generate-matrix
     uses: ./.github/workflows/call-build-linux-packages.yaml
     with:
-      version: master
-      ref: master
+      version: ${{ github.event.inputs.version }}
+      ref: ${{ github.ref }}
       build_matrix: ${{ needs.master-build-generate-matrix.outputs.build-matrix }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
