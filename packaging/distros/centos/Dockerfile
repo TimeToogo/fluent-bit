@@ -87,6 +87,8 @@ ENV FLB_JEMALLOC_OPTIONS=$FLB_JEMALLOC_OPTIONS
 # centos/8 base image
 FROM centos:8 AS centos-8-base
 
+RUN scl enable devtoolset-7 bash
+
 # CentOS is now EOL so have to use the vault repos
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
     sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
